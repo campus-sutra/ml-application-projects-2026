@@ -1,0 +1,18 @@
+\begin{credits}
+
+\subsubsection{\ackname}
+The author thanks the Department of Computer Science, Ramanujan College, University of Delhi, and course supervisor Nikhil Sir for constructive feedback on the initial manuscript.
+
+\subsubsection{\discintname}
+The author declares no competing interests to declare that are relevant to the content of this article.
+
+\subsubsection{Data and code availability.}
+The target is the Open Government Data Platform India resource \emph{States/UT-wise Gross Enrolment Ratio (GER) in Higher Education Based on 2011 Population Census Projection for 18--23 Age Group during 2021-22}, resource ID \texttt{7edbaeed-65e9-43ad-8f81-730187b70463}. The resource is released under the Government Open Data Licence--India (GODL-India) and was retrieved on 25 October 2026 from \url{https://www.data.gov.in/resource/statesut-wise-gross-enrolment-ratio-ger-higher-education-based-2011-population-census}. The predictors are from the AISHE 2021-22 Final Report \cite{aishe2023}. The raw files, retrieval metadata, SHA-256 checksums, processed analysis files, validation log (\path{data/processed/extraction_validation.txt}) and full pipeline (\path{src/run_all.py}, \path{src/verify_outputs.py}) are available at \url{https://github.com/Himanshu2ht/Modelling-Gross-Enrolment-Ratio-GER-in-Higher-Education-Across-States}.
+
+\subsubsection{Ethics and funding.}
+The data are aggregate administrative statistics with no personal information. The main ethical risk is over-reliance on a forecast: a missed target or a misallocated college budget can affect access for vulnerable groups, so uncertainty intervals and limitations should be read alongside point estimates. This research received no external funding.
+
+\subsubsection{Use of AI tools.}
+AI assistants (DeepSeek V4.1 Flash via OpenCode for the initial LaTeX conversion and \path{src/checks.py}; Gemini via Antigravity CLI for the Springer LNCS template conversion, workflow diagram, notation alignment, abstract tightening, updating \path{src/run_all.py} and \path{src/verify_outputs.py}, and pinning \path{requirements.txt}) were used to (i) draft and edit prose in the Introduction, Related Work, Discussion and Limitations; (ii) format the LaTeX tables, equations and bibliography; and (iii) refactor parts of \path{src/modeling.py} and \path{src/projection.py} and integrate \path{src/checks.py}. All data extraction and model estimation were executed locally from \path{src/}, every DOI was verified against Crossref, and every number in the article is reproduced by \path{src/run_all.py} and checked by \path{src/verify_outputs.py}. The author reviewed all text and code and takes full responsibility for the final submission.
+
+\end{credits}

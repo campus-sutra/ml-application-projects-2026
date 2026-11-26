@@ -1,0 +1,35 @@
+\section{Introduction}
+
+\subsection{Policy context}
+
+India operates one of the largest higher-education systems in the world, yet participation remains low relative to the size of its youth cohort. The National Education Policy 2020 sets a target of 50\% GER in higher education, including vocational education, by 2035 \cite{nep2020}. The official all-India GER was 28.4\% in 2021-22, an improvement of about one percentage point over 2020-21 but still roughly 22 points short of the goal \cite{aishe2023,ogd2025}. The Covid-19 period disrupted both enrolment and the administrative data series, so the recent trend is an uncertain guide to the next fourteen years.
+
+The primary users of this analysis are State higher-education departments, which decide where to sanction new colleges and how to allocate faculty, and the central NEP monitoring cell, which tracks whether the 50\% target is reachable. The decision is not whether to expand---the target already commits the system to expansion---but where additional capacity would raise participation most per rupee. The question also sits within the international Sustainable Development Goal (SDG) 4 framework: target 4.3 commits governments to equal access for all women and men to affordable, quality technical, vocational and tertiary education by 2030 \cite{unesco2020}. According to the same UNESCO monitoring report, global tertiary GER reached 39\% (growing by roughly one percentage point per year since 2000), placing India's 28.4\% over ten points below the global benchmark, while participation in low- and middle-income countries remains heavily concentrated among the richest households \cite{unesco2020}. India's State-level gap is therefore both a national policy problem and part of the wider SDG 4 agenda.
+
+The national figure is an average over units with very different starting points. In 2021-22, State GER ranged from 16.9\% in Assam to 47.0\% in Tamil Nadu; among Union Territories, Chandigarh reported 64.8\% and Dadra and Nagar Haveli and Daman and Diu 11.2\%. Fourteen of the 28 States were below 30\%, and none of the States had reached 50\%. Because education is on the concurrent list and because the demographic weight sits in the low-GER States, the national target is effectively a problem of State-level convergence.
+
+\subsection{Research questions}
+
+The project addresses three questions.
+
+\begin{enumerate}
+  \item \textbf{Association.} Conditional on the other indicators, how much independent information do college density, PTR and gender parity carry about State GER?
+  \item \textbf{Stability.} Do those associations survive out-of-sample prediction, influence diagnostics and within-State panel variation, or are they artefacts of a 28-unit cross-section?
+  \item \textbf{Projection.} Under explicit and auditable assumptions about density expansion, teacher supply and the common participation trend, which States reach 50\% by 2035-36, and what does that imply for the national target?
+\end{enumerate}
+
+The design is deliberately modest about causality. A cross-section of 28 States cannot identify the causal effect of building a college. It can, however, quantify conditional associations, test their fragility, and show how much the 2035 answer depends on assumptions that are usually left implicit.
+
+\subsection{Contributions}
+
+The study makes five methodological and reproducibility contributions.
+
+\begin{itemize}
+  \item It constructs an auditable, India-specific dataset from official government sources, cross-checked against published AISHE tables and stored with SHA-256 checksums and an explicit missingness audit.
+  \item It implements a leakage-free nested cross-validation protocol across linear, regularised and non-parametric learners, and demonstrates why a better-fitting polynomial specification must be rejected for out-of-range extrapolation.
+  \item It pairs point estimates with HC3 standard errors, 2,000-resample bootstrap intervals, variance inflation factors, residual specification tests, skewness/log-transform checks and leave-one-out influence analysis.
+  \item It tests cross-sectional patterns against five-year within-State panel specifications and documents why the sign reversal on PTR serves as a cautionary negative finding.
+  \item It provides a transparent, change-based projection framework with Monte Carlo uncertainty propagation and population-weighted aggregation to contrast State counts against cohort coverage.
+\end{itemize}
+
+Section~\ref{sec:related} reviews related work. Section~\ref{sec:data} describes the data and preprocessing, Section~\ref{sec:methods} the methods, Section~\ref{sec:setup} the experimental setup, Section~\ref{sec:results} the results, Section~\ref{sec:discussion} the discussion, and Section~\ref{sec:limitations} the limitations. Section~\ref{sec:conclusion} concludes.

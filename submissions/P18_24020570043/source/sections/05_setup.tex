@@ -1,0 +1,11 @@
+\section{Experimental Setup}\label{sec:setup}
+
+\textbf{Sample.} 28 States, 2021-22 cross-section, with no missing values on the three core predictors. The panel has 140 State-year observations for the year fixed-effects model (28 States $\times$ 5 years) and 112 first differences.
+
+\textbf{Split.} The cross-section is evaluated by LOOCV. There is no random train/test split because, with 28 units, a single split would be too sensitive to which States happen to land in the test set. The repeated five-fold protocol provides the stability check.
+
+\textbf{Tuning.} Hyper-parameters are selected inside each training fold. Table~\ref{tab:tuning} lists the grids, the selection rule and the values selected on the full sample. The nested LOOCV column is the honest score; the internal score is shown only to make the optimism of non-nested tuning visible.
+
+\textbf{Environment.} Python 3.14.4, scikit-learn 1.9.1, statsmodels 0.15.0, pandas 3.1.0, NumPy 2.5.4, SciPy 1.18.1 and matplotlib 3.11.2, all pinned in \path{requirements.txt}. The pipeline runs on Windows and Linux; \path{run.sh} is provided for Linux and \path{README.md} documents both. Figures use the Matplotlib ``DejaVu Sans'' font and a colour-blind-safe palette.
+
+\textbf{Reporting conventions.} Tables are numbered in the order in which they are cited. Each table caption names the CSV file in \path{outputs/tables/} that contains the same numbers, so the narrative and the artefacts can be cross-checked. Figures are embedded at print resolution. All percentages are GER points unless stated otherwise.
