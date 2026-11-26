@@ -1,0 +1,12 @@
+
+# Student and revised article metadata
+problem_number: P10
+university_roll_no: "24020570014"
+name: "Shubhangi Sharan"
+paper_title: "Maternal Health Risk-Level Classification for Rural Antenatal Care"
+article_type: "Original Research Article"
+code_repository: "https://github.com/shub1504/ML_project"
+dataset_source: "UCI Machine Learning Repository - Maternal Health Risk Dataset: https://doi.org/10.24432/C5DP5D"
+dataset_licence: "CC BY 4.0"
+target_venue: ""
+revision: 1
