@@ -1,0 +1,10 @@
+problem_number: P51
+university_roll_no: "24020570039"
+name: "Abhirup Chakraborty"
+paper_title: "Forecasting and Grouping Indian States for Cyber-Police Planning, 2018–2022"
+article_type: "Short Communication"
+code_repository: "https://github.com/abhirupchak/cyber-crime-forecasting-51"
+dataset_source: "NCRB State/UT-wise number of cases registered under cyber crimes, 2018–2022; https://www.data.gov.in/resource/stateut-wise-number-cases-registered-under-cyber-crimes-from-2018-to-2022"
+dataset_licence: "GODL-India"
+target_venue: ""
+revision: 1
