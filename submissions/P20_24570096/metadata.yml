@@ -1,0 +1,11 @@
+# Copy this folder to submissions/P<NN>_<UniversityRollNo>/ and fill in every field.
+problem_number: P20
+university_roll_no: "24570096"
+name: "Aayush Sapra"
+paper_title: "Forecasting Missing-Children Caseloads and Stratifying State Tracing Regimes in India via Classical Machine Learning"
+article_type: "Short Communication"
+code_repository: "https://github.com/aayushsapra200611/missing-children-ml-india"
+dataset_source: "NCRB: Year, State, and Gender Wise Number of Children Reported Missing and Traced (Dataful Dataset ID 18468 - https://dataful.in/datasets/18468/)"
+dataset_licence: "Government Open Data Licence - India (GODL)"
+target_venue: ""
+revision: 1
