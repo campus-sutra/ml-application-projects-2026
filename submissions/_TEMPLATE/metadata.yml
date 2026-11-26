@@ -1,11 +1,12 @@
-# Copy this folder to submissions/P<NN>_<UniversityRollNo>/ and fill in every field.
-problem_number: P00            # e.g. P07
-university_roll_no: "0000000000"
-name: "Your Full Name"
-paper_title: "Title of your revised article"
-article_type: "Original Research Article"   # or Applied Paper, Case Study, Comparative Study, Short Communication, Data Article
-code_repository: "https://github.com/<your-username>/<your-project-repo>"
-dataset_source: "Name of the dataset and its URL"
-dataset_licence: "e.g. GODL-India, CC BY 4.0"
-target_venue: "Conference or journal you plan to submit to (optional)"
-revision: 1                    # increase by 1 each time you push a new version after review
+
+# Student and revised article metadata
+problem_number: P10
+university_roll_no: "24020570014"
+name: "Shubhangi Sharan"
+paper_title: "Maternal Health Risk-Level Classification for Rural Antenatal Care"
+article_type: "Original Research Article"
+code_repository: "https://github.com/shub1504/ML_project"
+dataset_source: "UCI Machine Learning Repository - Maternal Health Risk Dataset: https://doi.org/10.24432/C5DP5D"
+dataset_licence: "CC BY 4.0"
+target_venue: ""
+revision: 1
