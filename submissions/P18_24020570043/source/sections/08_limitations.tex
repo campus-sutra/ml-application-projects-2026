@@ -1,0 +1,15 @@
+\section{Limitations and Threats to Validity}\label{sec:limitations}
+
+\begin{enumerate}
+  \item \textbf{Cross-sectional association is not causation.} The density coefficient is conditional on PTR and GPI; it does not identify the effect of building a college. Omitted variables such as income, urbanisation, secondary completion, private provision, distance education and State capacity may drive both density and GER.
+  \item \textbf{Small \(n\).} With 28 States and three predictors, the model has limited power. The GPI coefficient is essentially unidentified, and the confidence intervals for PTR and GPI are wide. LOOCV is the right protocol, but it cannot create information that the sample does not contain.
+  \item \textbf{PTR endogeneity.} PTR is mechanically related to enrolment and teacher supply. Its sign flips across specifications, so it should not be read as a causal lever.
+  \item \textbf{Omitted variables.} The model explains about 54\% of cross-State variance in-sample and 37\% out-of-sample. The residual pattern (Tamil Nadu under-predicted, Karnataka over-predicted) shows that the three indicators do not capture demand, quality or private provision.
+  \item \textbf{Extrapolation.} The projection applies a linear density coefficient far beyond the observed range (maximum 66) and caps density at 100. The required-density and additional-college figures are model-implied illustrations, not costed plans.
+  \item \textbf{Trend assumption.} The 0.866-point annual trend is an average from a short, Covid-affected panel. It may not continue for 14 years, and it is unlikely to be the same in every State.
+  \item \textbf{UT exclusion.} UTs are excluded from estimation for methodological reasons; their appendix projections are indicative only.
+  \item \textbf{Data revisions and reporting breaks.} GER 2021-22 is provisional in the OGD release; AISHE figures may be revised. The 2011 Census population projection is the denominator for both GER and density. Reporting practice can also break a series abruptly, as Sikkim's 2019-20 value illustrates; such breaks are annotated and tested rather than smoothed away.
+  \item \textbf{No spatial dependence.} Neighbouring States may share students, teachers and labour markets; the model treats them as independent.
+  \item \textbf{No policy cost.} The analysis does not estimate the fiscal cost of expansion, the supply of qualified teachers, or the demand response to new colleges.
+  \item \textbf{Single post-Covid cross-section.} The estimation sample is one year. A second year of AISHE data, or a district-level check for a few States, would allow the density association to be tested against a different population and reporting regime, and would make the paper more competitive for a journal submission.
+\end{enumerate}

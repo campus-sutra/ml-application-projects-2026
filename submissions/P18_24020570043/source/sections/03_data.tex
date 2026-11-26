@@ -1,0 +1,101 @@
+\section{Data and Preprocessing}\label{sec:data}
+
+\subsection{Target variable}
+
+The target is the Gross Enrolment Ratio in higher education for the 18--23 age group, all categories, for 2021-22. It comes from the Open Government Data Platform India resource \emph{States/UT-wise Gross Enrolment Ratio (GER) in Higher Education Based on 2011 Population Census Projection for 18--23 Age Group during 2021-22} (resource ID \texttt{7edbaeed-65e9-43ad-8f81-730187b70463}) \cite{ogd2025}. The release contains 36 records: 28 States and eight Union Territories.
+
+The resource is released under the Government Open Data Licence--India (GODL-India) and was retrieved on 25 October 2026 from \url{https://www.data.gov.in/resource/statesut-wise-gross-enrolment-ratio-ger-higher-education-based-2011-population-census}. The direct CSV link on that page returns HTTP 403 for automated requests. The data were therefore retrieved through the official OGD API in pages of ten records. The raw JSON, retrieval metadata and SHA-256 checksum are stored in \texttt{data/raw/}, so the target can be audited without relying on a screenshot or a transcription. The OGD values match AISHE Table 19 exactly for all 36 units: the maximum absolute difference is 0.000.
+
+\subsection{Predictors}
+
+The predictors come from the AISHE 2021-22 Final Report \cite{aishe2023}. Table~\ref{tab:variables} lists the variables, their definitions and the AISHE tables used. College density is colleges registered with AISHE per lakh of the 18--23 population. PTR is the pupil--teacher ratio for all institutions in regular mode. GPI is female GER divided by male GER. Average enrolment per college is used only in a robustness model because it shares the numerator of GER and is therefore mechanically endogenous.
+
+\begin{table}[htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Variables, definitions and sources. The 2021-22 cross-section is built from the OGD target and the AISHE Final Report; the panel repeats the same definitions for 2017-18 to 2021-22. Source: \texttt{data/processed/data\_dictionary.md}.}
+\label{tab:variables}
+\begin{tabular}{@{}p{3.6cm}p{4.9cm}p{3.1cm}@{}}
+\toprule
+Variable & Definition & Source \\
+\midrule
+\path{ger} & GER in higher education, 18--23 years, all categories (\%) & OGD 2021-22; AISHE Table 19 \\
+\path{ger_male}, \path{ger_female} & Gender-specific GER (\%) & AISHE Table 19 \\
+\path{gpi} & Female GER / male GER & AISHE Table 48 \\
+\path{college_density} & Colleges per lakh population aged 18--23 & AISHE Tables 4 and 42 \\
+\path{ptr} & Pupil--teacher ratio, all institutions, regular mode & AISHE Table 49 \\
+\path{avg_enrolment_per_college} & Average enrolment per college, incl.\ estimated enrolment & AISHE Tables 4 and 42 \\
+\path{colleges} & Colleges registered with AISHE, 2021-22 & AISHE Table 4 \\
+\path{delta_*_4y} & Change from 2017-18 to 2021-22 & AISHE Tables 42, 48, 49 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The panel covers 2017-18 to 2021-22 and is built from the same AISHE tables. It contains 180 rows (36 units $\times$ 5 years). Missing values occur only for Ladakh in 2017-18 and 2018-19 (before it became a Union Territory) and for Lakshadweep, which does not report college counts or college density. Table~\ref{tab:missing} records each gap, the reason and the treatment. These are structural non-reports, not random gaps, so they are excluded rather than imputed.
+
+\begin{table}[htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\caption{Missingness in the panel and the estimation sample. Every unit-year with a missing value is listed; all other unit-years are complete on the core variables. Source: \texttt{table13\_missingness.csv}.}
+\label{tab:missing}
+\begin{tabular}{@{}p{1.6cm}p{1.6cm}p{2.3cm}p{3.0cm}p{3.0cm}@{}}
+\toprule
+Unit & Years & Variables missing & Reason & Treatment \\
+\midrule
+Ladakh & 2017-18, 2018-19 & \path{ger}, \path{college_density}, \path{ptr}, \path{gpi}, \path{avg_enrolment_per_college} & Ladakh was constituted as a UT on 31 Oct 2019; AISHE has no separate pre-2019 rows. & Two unit-years excluded from panel; no imputation (structural gap). \\
+Lakshadweep & 2017-18 to 2021-22 & \path{college_density}, \path{avg_enrolment_per_college} & AISHE does not report college counts or density for Lakshadweep. & Excluded from multivariate models and density projection; GER, PTR and GPI kept for description only. \\
+28-State sample & 2021-22 & none & Complete cases on GER, college density, PTR and GPI. & $n = 28$; no imputation. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Validation and provenance}
+
+Extraction integrity is documented in \path{data/processed/extraction_validation.txt}. Four checks matter.
+
+\begin{itemize}
+  \item The panel has 180 rows and 36 units, as expected.
+  \item Table 42 and Table 4 agree exactly on college density and average enrolment per college (maximum absolute difference 0.000).
+  \item GPI computed from the reported female and male GER agrees with the published GPI to within 0.005.
+  \item The 2021-22 GER matches the independent OGD release exactly for all 36 units (maximum absolute difference 0.000; $n = 36$).
+\end{itemize}
+
+Headline values were also checked by hand: Karnataka college density 66, Bihar PTR 64, Kerala GPI 1.44 and all-India GER 28.4. The AISHE PDF has SHA-256 \nolinkurl{c4400273cb2d574c793390a900528c825b036667cb0977bbdb8c40f0276d5f15}; the OGD JSON has SHA-256 \nolinkurl{103e741aa4b7aaacc7b2fa4fa67bb96d48a2695e01b7edd3c42ce246aad371c7}. Both hashes are recorded in \texttt{data/raw/SHA256SUMS.txt}.
+
+\subsection{Sample construction}
+
+The primary estimation sample is the 28 States. The eight Union Territories are excluded from estimation for three reasons. First, their tertiary catchments are city-scale and cross State boundaries: Chandigarh, Delhi and Puducherry draw students from surrounding States, so a UT-level GER is not comparable to a State GER. Second, three UTs are high-leverage points in the predictor space. Third, including all 35 units with complete predictors reduces LOOCV $R^2$ from 0.370 to 0.158 and raises RMSE from 6.86 to 11.38. The UTs are not discarded: they appear in the descriptive figures and in an indicative projection appendix.
+
+Lakshadweep is excluded from all multivariate work because college density and average enrolment are not reported. Ladakh has only three panel years. The 28-State sample has no missing values on the three core predictors or the target, so no imputation is used in the primary specification. This is a deliberate choice: imputing a structural non-report would manufacture information and would make the missingness mechanism look benign when it is not.
+
+\subsection{Preprocessing}
+
+The preprocessing steps are simple by design, and all of them are either harmless for a linear model or explicitly tested.
+
+\begin{itemize}
+  \item \textbf{Feature construction.} College density is used as reported (colleges per lakh of the 18--23 population), not per total population. This matters because the age structure differs across States; a density based on total population would understate the capacity gap in high-fertility States.
+  \item \textbf{Scaling.} Ridge, polynomial and distance-based models are fitted inside a scikit-learn pipeline with \texttt{StandardScaler}. The scaler is estimated on the training fold only. OLS is reported on the raw scale so that coefficients retain their natural units.
+  \item \textbf{Outliers.} No State is deleted in the primary specification. Deleting high-leverage units can hide the very heterogeneity the analysis is meant to describe. Instead, influence is measured with leverage, studentised residuals and Cook's distance, and the model is re-estimated without Karnataka and without Karnataka plus Bihar. Those checks are reported in Section~\ref{sec:panel}.
+  \item \textbf{Collinearity.} College density and PTR are correlated at $-0.66$. Variance inflation factors are 1.78, 1.93 and 1.12, all well below the conventional threshold of 5, so the three-indicator model is estimable. Ridge is used as a second check on coefficient stability.
+  \item \textbf{Leakage.} Average enrolment per college is excluded from the core model because it is mechanically related to GER. All scaling and hyper-parameter selection happen inside the cross-validation loop. The target is never used to construct a predictor.
+  \item \textbf{Skewness and functional form.} PTR is right-skewed (skewness 2.05), while college density (0.35) and GPI (0.76) are only mildly skewed. Table~\ref{tab:log} compares the reported raw-scale OLS with specifications using log college density, log college density and log PTR, and logs of all three predictors. Logs reduce the maximum absolute predictor skewness from 2.05 to 1.01, but they do not improve out-of-sample prediction: LOOCV RMSE rises from 6.86 on the raw scale to 6.91--6.94, and LOOCV $R^2$ falls from 0.370 to 0.356--0.360. The college density coefficient remains positive and significant in every specification. The raw scale is therefore retained: it is the better predictor, its coefficient is directly interpretable as GER points per additional college, and it keeps the projection linear in density. Because a linear model has no natural bound, college density is capped at 100 colleges per lakh in the projection (the observed maximum is 66). A log specification would bound the marginal effect automatically, but it would fit worse and would make the required-density calculation non-linear.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\caption{Log-transform comparison for the OLS specification, 28 States. The dependent variable is State GER in every row. The college density coefficient is per additional college per lakh in the raw row and per unit of log density in the log rows; classical OLS standard errors are in parentheses. LOOCV refits the model on 27 States at each step. Max $|\text{skew}|$ is the largest absolute skewness among that row's predictors. Source: \texttt{table12\_log\_transform.csv} and \texttt{table12b\_skewness.csv}.}
+\label{tab:log}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+Specification & In-sample $R^2$ & LOOCV $R^2$ & LOOCV RMSE & AIC & Density coef.\ (SE) & $p$ & Max $|\text{skew}|$ \\
+\midrule
+Raw scale (reported)      & 0.543 & 0.370 & 6.864 & 186.3 & 0.353 (0.119)  & 0.007 & 2.05 \\
+Log density               & 0.524 & 0.356 & 6.935 & 187.5 & 10.744 (3.922) & 0.011 & 2.05 \\
+Log density and log PTR   & 0.541 & 0.359 & 6.919 & 186.5 & 8.883 (3.694)  & 0.024 & 1.01 \\
+Log all three predictors  & 0.541 & 0.360 & 6.914 & 186.5 & 8.874 (3.697)  & 0.024 & 1.01 \\
+\bottomrule
+\end{tabular}}
+\end{table}

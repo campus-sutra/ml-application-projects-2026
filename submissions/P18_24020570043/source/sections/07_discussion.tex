@@ -1,0 +1,31 @@
+\section{Discussion}\label{sec:discussion}
+
+\subsection{Why density, and why not PTR or GPI}
+
+The robust density association is consistent with an access story. States with more colleges per eligible population have lower travel and transaction costs, more programme choice and more competition, all of which can raise participation. The coefficient is conditional on PTR and GPI, but it may still pick up the fact that high-density States are richer or more urban. It is a cross-sectional association: States that build colleges may also be the States that invest in schools, roads and scholarships. The panel result, especially the larger first-difference coefficient, is reassuring but not decisive; a short panel cannot separate the effect of expansion from a simultaneous demand shock. The result is also consistent with the recent finding that private provision narrows regional GER gaps in India, since private colleges are concentrated where density is already high \cite{sharma2026}.
+
+The PTR result is a cautionary tale. A negative bivariate correlation between PTR and GER is often read as evidence that teacher shortages depress enrolment. The panel shows that the sign is not stable. With State fixed effects and in first differences, the PTR coefficient becomes positive. This is consistent with reverse causality and with the mechanical definition of PTR. The appropriate conclusion is not that teachers do not matter, but that this design cannot identify their causal effect. A credible teacher-supply analysis would need instrumented or policy-induced variation in hiring, or administrative data linking teachers to institutions and programmes.
+
+The GPI result is similarly nuanced. Ten States have GPI below 1.0, and gender gaps in higher education remain a serious equity concern \cite{ghosh2021}. But the aggregate GER is already near parity in most States, and the remaining variation is not strongly associated with the aggregate once density and PTR are controlled. Gender parity should be evaluated with female GER, field-of-study segregation and completion as outcomes, not only as a regressor for the aggregate.
+
+\subsection{Why the national target is harder than a count of States}
+
+The reference scenario reaches 13 of 28 States, but the population-weighted GER is only 43.5\%. The States below 50\% include Bihar, Uttar Pradesh, Madhya Pradesh, Jharkhand, Assam, West Bengal and Odisha, which together account for a large share of the 18--23 population. A national target is not a count of States; it is a population-weighted outcome. The unweighted ``13 of 28'' therefore overstates progress. This is the same aggregation problem that Kadlak and Behera~\cite{kadlak2026} identify at the district level: a State or national ratio can improve while the places with the largest youth cohorts fall further behind.
+
+The reform scenario is instructive. PTR convergence to 20 and GPI convergence to 1.05 raise the mean projection by about 1.2 points, but they do not move any additional State across the 50\% line. In this model, the quality and parity levers are too small, and too imprecisely estimated, to close a 20-point gap. Density expansion and the secular participation trend do most of the work. This does not mean quality reforms are unimportant; it means they are unlikely to be sufficient on their own, and that a credible 2035 strategy needs a large capacity component in the low-density States.
+
+\subsection{Policy implications}
+
+Five implications follow, with the caveat that expansion without learning gains can leave graduates without the skills that higher education is meant to provide \cite{unesco2020}.
+
+\begin{enumerate}
+  \item \textbf{Differentiate the target by State group.} The southern and hilly States (Tamil Nadu, Kerala, Karnataka, Telangana, Himachal Pradesh, Uttarakhand, Sikkim) are broadly on track; the priority there is quality, research and graduate outcomes, not raw capacity. The low-density populous States (Bihar, Uttar Pradesh, Madhya Pradesh, Jharkhand, Assam, West Bengal, Odisha, Chhattisgarh) need a capacity push.
+  \item \textbf{Measure density against the 18--23 population.} The same number of colleges implies very different access in States with different age structures. A target based on total population would understate the need in high-fertility States.
+  \item \textbf{Pair expansion with teacher hiring.} Building colleges without teachers would raise PTR and dilute quality. The positive PTR coefficient in the fixed-effects models is a warning that enrolment growth can outrun teacher supply.
+  \item \textbf{Do not use the aggregate GER as the only gender indicator.} GPI is near parity in most States; the remaining gaps are better studied with female GER, field segregation and completion.
+  \item \textbf{Report uncertainty.} A point forecast of 50\% in 2035 is not a plan. The 5th--95th intervals span 20 points or more for many States; policy should be robust to that uncertainty, not anchored to a single number.
+\end{enumerate}
+
+\subsection{What the machine-learning comparison adds}
+
+The model comparison is not a tournament in which the most flexible model wins. The polynomial has the best LOOCV error, but it is non-monotone outside the observed range and unsuitable for extrapolation. The tuned tree and \(k\)-NN have high in-sample \(R^2\) but poor out-of-sample error, and their nested scores expose the optimism of tuning on 28 observations. OLS is not the best predictor, but it is within about 15\% of the best RMSE, it is interpretable, and it supports the inference and projection that the policy question requires. This is a practical illustration of the distinction between prediction and explanation \cite{mullainathan2017,athey2019}.

@@ -1,0 +1,10 @@
+problem_number: P18
+university_roll_no: "24020570043"
+name: "Himanshu Kumar Jha"
+paper_title: "Modelling State-Level Gross Enrolment Ratio in Indian Higher Education: Correlates, Validation and a 2035 Projection"
+article_type: "Short Communication"
+code_repository: "https://github.com/Himanshu2ht/Modelling-Gross-Enrolment-Ratio-GER-in-Higher-Education-Across-States"
+dataset_source: "OGD India resource 7edbaeed-65e9-43ad-8f81-730187b70463 (https://www.data.gov.in/resource/statesut-wise-gross-enrolment-ratio-ger-higher-education-based-2011-population-census) and AISHE 2021-22 Final Report"
+dataset_licence: "Government Open Data Licence-India (GODL-India)"
+target_venue: "Current Science - Research Communication (or BDCC MDPI SI)"
+revision: 1

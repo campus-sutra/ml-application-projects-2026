@@ -1,0 +1,54 @@
+\documentclass[runningheads]{llncs}
+
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+\graphicspath{{figures/}}
+\newcommand{\GER}{\mathrm{GER}}
+
+\begin{document}
+
+\title{Modelling State-Level Gross Enrolment Ratio in Indian Higher Education: Correlates, Validation and a 2035 Projection}
+\titlerunning{Modelling State-Level GER in Indian Higher Education}
+
+\author{Himanshu Kumar Jha\inst{1}}
+\authorrunning{H. K. Jha}
+
+\institute{Department of Computer Science, Ramanujan College, University of Delhi, New Delhi, India\\
+\email{himanshu.jha013@gmail.com}}
+
+\maketitle
+
+\begin{abstract}
+India's National Education Policy 2020 targets a 50\% Gross Enrolment Ratio (GER) in higher education by 2035, up from 28.4\% in 2021-22. National averages conceal wide State disparities, with populous States furthest behind. This study asks how strongly State GER is associated with college density, pupil--teacher ratio (PTR) and Gender Parity Index (GPI, female GER divided by male GER); whether these associations survive out-of-sample and panel checks; and what recent trends imply for 2035-36. Using Open Government Data for 2021-22 and All India Survey on Higher Education predictors across 28 States, we compare a mean baseline against five learned models under leave-one-out cross-validation (LOOCV) and repeated five-fold cross-validation. Ordinary least squares yields an in-sample $R^2$ of 0.543 and LOOCV $R^2$ of 0.370 (LOOCV RMSE 6.86 vs.\ 8.97 GER points for the baseline). College density is the only robust correlate: each additional college per lakh 18--23 population corresponds to $+0.353$ GER points (95\% bootstrap interval 0.11 to 0.66), surviving State fixed effects and first differences. Under recent trends, 13 of 28 States reach 50\% by 2035-36, yet population-weighted GER reaches only 43.5\%, leaving 68.6\% of the youth cohort in off-track States.
+
+\keywords{Gross Enrolment Ratio \and Indian higher education \and NEP 2020 \and college density \and leave-one-out cross-validation \and panel data \and SDG 4}
+\end{abstract}
+
+\input{sections/01_introduction}
+\input{sections/02_related}
+\input{sections/03_data}
+\input{sections/04_methods}
+\input{sections/05_setup}
+\input{sections/06_results}
+\input{sections/07_discussion}
+\input{sections/08_limitations}
+\input{sections/09_conclusion}
+\input{sections/10_declarations}
+
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+\appendix
+\input{sections/11_appendix}
+
+\end{document}

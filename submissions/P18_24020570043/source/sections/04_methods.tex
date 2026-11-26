@@ -1,0 +1,139 @@
+\section{Methodology}\label{sec:methods}
+
+Figure~\ref{fig:workflow} summarises the end-to-end analytical pipeline from official data retrieval and cross-validation to the 2035-36 scenario projections.
+
+\begin{figure}[htbp]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=5mm and 5mm,
+  box/.style={rectangle, rounded corners=2pt, draw=black!70, fill=black!3, align=center, font=\scriptsize, inner sep=4pt, minimum height=9mm},
+  arr/.style={-{Stealth[length=2mm]}, semithick, draw=black!70}
+]
+\node[box] (data) {OGD API + AISHE PDF\\(36 units, 5-yr panel,\\SHA-256 \& cross-checks)};
+\node[box, right=of data] (sample) {Sample \& Checks\\(28 States; 8 UTs separate;\\missingness \& log checks)};
+\node[box, right=of sample] (cv) {Nested Validation\\(LOOCV + $20{\times}5$-fold CV;\\mean, OLS, ridge, poly, $k$-NN, tree)};
+\node[box, right=of cv] (diag) {Inference \& Panel\\(HC3 SEs, 2,000-boot CIs,\\RESET/BP/SW, FE \& FD)};
+\node[box, right=of diag] (proj) {2035-36 Projection\\(S1--S3 scenarios, 2,000\\Monte Carlo draws, pop.\ weights)};
+\draw[arr] (data) -- (sample);
+\draw[arr] (sample) -- (cv);
+\draw[arr] (cv) -- (diag);
+\draw[arr] (diag) -- (proj);
+\end{tikzpicture}}
+\caption{End-to-end workflow linking official data validation, nested cross-validation, panel sensitivity checks and change-based 2035-36 projections. Source: \texttt{src/run\_all.py}.}
+\label{fig:workflow}
+\end{figure}
+
+\subsection{Notation and baseline}
+
+Let \(y_s\) be the GER of State \(s\) in 2021-22 and let \(D_s\), \(P_s\) and \(G_s\) denote college density, PTR and GPI. The benchmark is the mean predictor, which assigns every State the training-sample mean:
+\[
+\hat{y}_s = \bar{y}_{\text{train}}.
+\]
+The baseline is not a straw man. With \(n = 28\), it is a demanding test: a model that cannot beat the mean out of sample has no predictive content, however impressive its in-sample \(R^2\).
+
+\subsection{Linear model and OLS}
+
+The primary specification is
+\[
+y_s = \beta_0 + \beta_D D_s + \beta_P P_s + \beta_G G_s + \varepsilon_s.
+\]
+OLS chooses the coefficient vector \(\beta = (\beta_0, \beta_D, \beta_P, \beta_G)'\) that minimises the residual sum of squares:
+\[
+\hat{\beta} = \arg\min_{\beta} \sum_s \left(y_s - x_s'\beta\right)^2 = (X'X)^{-1}X'y,
+\]
+where \(x_s = (1, D_s, P_s, G_s)'\). The model is estimated on the raw scale for interpretability. HC3 hetero\-skedasticity-robust standard errors are reported because the Breusch--Pagan test is a diagnostic, not a licence to assume homoskedasticity \cite{white1980,mackinnon1985}. Coefficient uncertainty is also summarised with 2,000 bootstrap resamples of the 28 States, using percentile intervals \cite{efron1993}. Standardised coefficients (SD of GER per SD of predictor) make the effect sizes comparable, and VIFs diagnose collinearity.
+
+\subsection{Ridge regression}
+
+Ridge adds an \(L_2\) penalty to the least-squares objective:
+\[
+\hat{\beta}_{\text{ridge}} = \arg\min_{\beta} \sum_s \left(y_s - x_s'\beta\right)^2 + \lambda \sum_{j \in \{D,P,G\}} \beta_j^2.
+\]
+The penalty shrinks coefficients toward zero and stabilises them when predictors are correlated \cite{hoerl1970}. The intercept is not penalised. Features are standardised before the penalty is applied, so \(\lambda\) is comparable across variables. \(\lambda\) is selected by \texttt{RidgeCV} over 61 log-spaced values from \(10^{-3}\) to \(10^{3}\), using efficient leave-one-out generalised cross-validation inside each training fold. The selected value on the full sample is \(\lambda = 7.943\).
+
+\subsection{Polynomial ridge}
+
+The polynomial specification expands the three features into all squares and pairwise products, then applies ridge:
+\[
+\hat{y} = \beta_0 + \sum_{j=1}^3 \beta_j x_j + \sum_{1 \le j \le k \le 3} \beta_{jk} x_j x_k.
+\]
+This is a flexible predictive benchmark that can capture diminishing returns or interactions. Degrees 1, 2 and 3 were compared by LOOCV; degree 2 performed best (RMSE 5.96, against 6.74 for degree 1 and 6.57 for degree 3). The degree-2 model is reported. It is not used for projection because its fitted curve turns downward beyond roughly 45--66 colleges per lakh, implying that further expansion eventually reduces GER. That is an extrapolation artefact, not a policy finding.
+
+\subsection{Non-parametric benchmarks}
+
+Two tuned non-parametric models test whether a flexible learner can do better with the same three features. \(k\)-nearest-neighbour regression averages the outcomes of the \(k\) closest training States under Euclidean distance; the search covers \(k \in \{3,5,7,9,11,15\}\) and uniform or distance weighting. A regression tree recursively partitions the feature space to minimise within-node squared error; the search covers maximum depth \(\in \{2,3,4\}\) and minimum leaf size \(\in \{3,5\}\). Both searches use LOOCV and root mean squared error, and both are repeated inside every outer fold of the model comparison. The nested design is important: tuning on the full sample and then evaluating on the same sample would overstate performance.
+
+\subsection{Validation design}
+
+Because \(n = 28\), leave-one-out cross-validation is the primary out-of-sample criterion \cite{stone1974}. Each State is held out once, the model is refitted on the other 27, and the held-out prediction is compared with the observed GER. The reported metrics are \(R^2\), RMSE and MAE. \(R^2\) is computed on the pooled out-of-sample predictions, so it can be negative when a model is worse than the mean.
+
+A single partition can flatter or penalise a model by chance. Each specification is therefore also evaluated with 20 repeats of shuffled five-fold cross-validation. The mean and standard deviation of RMSE across repeats are reported. The two protocols answer different questions: LOOCV is the most efficient use of 28 observations, while repeated five-fold CV shows how sensitive the ranking is to the composition of the folds. Hyper-parameter tuning is nested inside both protocols, so no held-out State influences scaling, penalty selection or neighbour choice.
+
+\subsection{Diagnostics and influence}
+
+Residual diagnostics include the Shapiro--Wilk test for normality \cite{shapiro1965}, the Breusch--Pagan test for heteroskedasticity \cite{breusch1979}, the Ramsey RESET test for functional form \cite{ramsey1969}, and the condition number of the design matrix. Influence is measured with leverage, studentised residuals, DFFITS and Cook's distance \cite{cook1977}. The conventional Cook's distance threshold is \(4/n = 0.143\). Two States exceed it: Karnataka and Nagaland. The model is re-estimated without them to check that the college density result is not driven by one or two observations.
+
+\subsection{Panel and sensitivity checks}
+
+A short panel is used to ask whether the cross-sectional pattern survives within-State variation. Three specifications are estimated:
+
+\begin{itemize}
+  \item \textbf{Year fixed effects.} Pooled OLS with year dummies and State-clustered standard errors. Identification comes from within-State changes plus a common annual shift.
+  \item \textbf{State and year fixed effects.} Adds State dummies, so identification comes only from within-State changes over time.
+  \item \textbf{First differences.} Regresses the annual change in GER on annual changes in college density, PTR and GPI, removing any time-invariant State characteristic.
+\end{itemize}
+
+The year fixed-effects model also provides the common annual trend used in the projection: the coefficient on 2021-22 divided by four years, with its cluster-robust standard error. A UT-inclusive sensitivity model (35 units, with and without a UT dummy) documents the cost of pooling UTs with States.
+
+\subsection{Projection to 2035-36}\label{sec:projection}
+
+The cross-section predicts State GER in the same year (2021-22) from college density, PTR and GPI; it is not a time-series model. Turning it into a 2035 projection requires four assumptions: (i) the conditional associations are stable over 2022--2035; (ii) college density, PTR and GPI follow the scenario paths in Table~\ref{tab:scenarios}; (iii) the common annual participation trend of 0.866 points continues; and (iv) State-specific shocks are additive and can be represented by draws from the residual distribution. Under these assumptions the output is a conditional forecast, not a causal prediction of what any single policy will achieve.
+
+The projection is change-based, not level-based:
+\begin{equation}
+\begin{aligned}
+\GER_{s,2035} = \GER_{s,2021} &+ \beta_D (D_{s,2035} - D_{s,2021}) + \beta_P (P_{s,2035} - P_{s,2021}) \\
+&+ \beta_G (G_{s,2035} - G_{s,2021}) + \tau h m,
+\end{aligned}
+\label{eq:projection}
+\end{equation}
+where \(h = 14\) years, \(m\) is a scenario-specific trend multiplier, and \(\tau = 0.866\) GER points per year (SE 0.174) is the common trend from the year fixed-effects panel. The coefficients \((\beta_D, \beta_P, \beta_G)\) are the OLS estimates from the 28-State cross-section. The intercept \(\beta_0\) is deliberately excluded: a cross-sectional intercept would embed the 2021-22 level permanently and would forecast that a State with average predictors stays at the sample average forever.
+
+Three scenarios are defined in Table~\ref{tab:scenarios}. S1 damps both college density growth and the common trend; S2 carries recent trends forward and is the reference case; S3 adds teacher and parity convergence to full college density growth.
+
+\begin{table}[htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Scenario definitions used in the 2035-36 projection. All scenarios use the OLS coefficients \((\beta_D, \beta_P, \beta_G)\) from the 28-State cross-section, the common annual trend \(\tau\) from the year fixed-effects panel, and a college density cap of 100 colleges per lakh. The recent annual density change is the 2017-18 to 2021-22 change divided by four. Source: \texttt{src/projection.py}.}
+\label{tab:scenarios}
+\begin{tabular}{@{}p{2.9cm}p{2.7cm}p{2.8cm}p{2.9cm}@{}}
+\toprule
+Assumption & S1 Damped & S2 Recent trend (ref.) & S3 NEP reform \\
+\midrule
+Annual density change & \(0.5 \times\) recent & \(1.0 \times\) recent & \(1.0 \times\) recent \\
+Common trend & \(0.5 \times \tau\) & \(\tau\) & \(\tau\) \\
+PTR (\(P_{s,2035}\)) & unchanged (\(P_{s,2021}\)) & unchanged (\(P_{s,2021}\)) & \(\min(P_{s,2021},20)\) \\
+GPI (\(G_{s,2035}\)) & unchanged (\(G_{s,2021}\)) & unchanged (\(G_{s,2021}\)) & \(\max(G_{s,2021}, 1.05)\) \\
+Density bounds & 1 to 100 & 1 to 100 & 1 to 100 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The recent annual college density change is the 2017-18 to 2021-22 change divided by four. College density is capped at 100 colleges per lakh and floored at 1.
+
+Uncertainty is propagated with 2,000 bootstrap draws. In each draw, the 28 States are resampled with replacement, the OLS coefficients are re-estimated, the common trend is drawn from \(N(0.866, 0.174)\), and a State-level residual is drawn from \(N(0, 6.315)\). The same draws are used across scenarios (common random numbers), so differences between scenarios are not confounded by Monte Carlo noise. \(P(\GER \ge 50\%)\) is the share of draws at or above the target, and the 5th--95th percentile interval is reported. States are classified as Achieved (GER already \(\ge 50\%\)), On track (\(P(\GER \ge 50\%) \ge 0.5\)), At risk (\(0.15 \le P(\GER \ge 50\%) < 0.5\)) or Off track (\(P(\GER \ge 50\%) < 0.15\)). The 0.5 cut-off is a communication device, not a statistical test; the probability itself is the more informative quantity.
+
+\subsection{Required density}
+
+For each State, the model-implied college density required by 2035-36 under S2 is obtained by solving equation~\eqref{eq:projection} for \(D_{s,2035}\) with \(\GER_{s,2035} = 50\) and PTR and GPI held at their 2021-22 values:
+\begin{equation}
+D_s^{\text{req}} = D_{s,2021} + \frac{50 - \left(\GER_{s,2021} + \tau h\right)}{\beta_D}.
+\label{eq:required}
+\end{equation}
+The density gap is \(\max(0, D_s^{\text{req}} - D_{s,2035})\). An indicative additional-college figure multiplies the gap by the implied 18--23 population (\(\text{colleges}_{s,2021} / D_{s,2021}\)). This is a model-implied illustration, not a costing. It assumes that the linear density coefficient \(\beta_D\) applies far outside the observed range and ignores teacher supply, land, funding and demand.
+
+\subsection{Software and reproducibility}
+
+The analysis uses Python 3.14.4 with pandas 3.1.0, NumPy 2.5.4, scikit-learn 1.9.1, statsmodels 0.15.0, SciPy 1.18.1, matplotlib 3.11.2, seaborn 0.13.2, pypdf 6.21.4, pdfplumber 0.11.10 and openpyxl 3.1.5. Exact versions are pinned in \path{requirements.txt}. The random seed is 42 for every stochastic step. \path{src/run_all.py} runs the pipeline end to end (including \path{src/checks.py}); individual scripts can be run separately. All tables are written to \path{outputs/tables/} and all figures to \path{outputs/figures/} at 300 dpi. \path{src/verify_outputs.py} re-reads the artefacts and checks the headline numbers quoted in this article, so a reader can distinguish a reproduction failure from a typo.
