@@ -1,0 +1,10 @@
+problem_number: P19
+university_roll_no: "24020570012"
+name: "Gautam Mishra"
+paper_title: "Campus-Placement Prediction for Graduating Students: A Leakage-Free Evaluation of Classical Machine-Learning Models"
+article_type: "Applied Paper"
+code_repository: "https://github.com/Gautam-io-dev/Campus-Placement-Prediction-for-Graduating-Students"
+dataset_source: "Campus Recruitment (Factors affecting campus placement), Ben Roshan D, Kaggle – https://www.kaggle.com/datasets/benroshan/factors-affecting-campus-placement (accessed 17 Nov 2026)"
+dataset_licence: "CC0: Public Domain"
+target_venue: "BDCC (MDPI) Special Issue 'AI-Driven Educational Technologies for Learning Analytics' (deadline 31 Aug 2027) or ACM COMPUTE (next cycle); to be confirmed after instructor review"
+revision: 1
