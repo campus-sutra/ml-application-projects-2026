@@ -1,0 +1,10 @@
+problem_number: P65
+university_roll_no: "24020570049"
+name: "Tanisha Kanojia"
+paper_title: "Spatiotemporal Analysis of Stubble Burning in Punjab and Haryana"
+article_type: "Applied Paper"
+code_repository: "https://github.com/TanishaKanojia836/Stubble-Fire-Ml-project"
+dataset_source: "NASA FIRMS MODIS Collection 6.1 Active Fire Data (https://firms.modaps.eosdis.nasa.gov/)"
+dataset_licence: "NASA EOSDIS Open Data Policy (Public Domain / CC0)"
+target_venue: "Class Proceedings (Springer LNCS-style)"
+revision: 1
